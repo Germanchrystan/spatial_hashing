@@ -95,13 +95,7 @@ namespace SpatialHashing
       foreach(int id in bucketIds)
       {
         List<Bubble> bubblesInBucket = Buckets[id].Where(b => b != bubble).ToList();
-        bubblesNearby.AddRange(bubblesInBucket); 
-        /*
-        The bubble passed in the argument would be included in the list.
-        Shouldn't it be removed?
-        Or shoudn't at least check in each collision loop that I'm not
-        checking collision between one bubble against itself?
-        */
+        bubblesNearby.AddRange(bubblesInBucket);
       }
       return bubblesNearby;
     }
