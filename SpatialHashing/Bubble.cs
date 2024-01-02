@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using StatialHashing;
 
 namespace SpatialHashing
 {
-    public class Bubble
+    public class Bubble: GameObject
     {
         private float radius;
         private Vector2 position;
@@ -12,6 +12,9 @@ namespace SpatialHashing
         private float speed = 120f;
         private Texture2D texture;
         private Rectangle rect;
+        public Rectangle Rect { get { return rect; } }
+
+        private bool collidedFlag = false;
 
 
         public Bubble(float radius, Vector2 position, Vector2 direction, Texture2D texture)
@@ -25,6 +28,7 @@ namespace SpatialHashing
 
         public void Update(GameTime gameTime)
         {
+            collidedFlag = false;
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             position.X += direction.X * speed * dt;
             position.Y += direction.Y * speed * dt;
@@ -56,6 +60,16 @@ namespace SpatialHashing
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, rect, Color.Black);
+        }
+
+        public void OnCollision()
+        {
+            if(!collidedFlag)
+            {
+                SwitchXPosition();
+                SwitchYPosition();
+                collidedFlag = true;
+            }
         }
     }
 }
