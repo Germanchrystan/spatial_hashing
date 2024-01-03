@@ -6,8 +6,9 @@ namespace StatialHashing
 {
   public interface GameObject
   {
-    public void Update(GameTime gameTime);
-    public void OnCollision();
     public Rectangle Rect { get { return Rect ;}}
+    public void Update(GameTime gameTime);
+    public void Draw(SpriteBatch spriteBatch);
+    public void OnCollision();
   }
 }

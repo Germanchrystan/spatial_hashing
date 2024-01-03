@@ -5,23 +5,24 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using StatialHashing;
 
 namespace SpatialHashing
 {
   public class SpatialHashingManager
   {
     private int cols, rows, length, cellSize;
-    private Dictionary<int, List<Bubble>> Buckets;
+    private Dictionary<int, List<GameObject>> Buckets;
     public SpatialHashingManager(int cellSize)
     {
       this.cellSize = cellSize;
       cols = Constants.WINDOW_WIDTH / cellSize;
       rows = Constants.WINDOW_HEIGHT / cellSize;
       length = cols * rows;
-      Buckets = new Dictionary<int, List<Bubble>>();
+      Buckets = new Dictionary<int, List<GameObject>>();
       for (int i = 0; i < length; i++)
       {
-        Buckets.Add(i, new List<Bubble>());
+        Buckets.Add(i, new List<GameObject>());
       }
     }
     public void ClearBuckets()
@@ -47,57 +48,57 @@ namespace SpatialHashing
       if(!bucketToAddTo.Contains(vectorPosition)) bucketToAddTo.Add(vectorPosition);
     }
 
-    public List<int> GetBucketsForAllCorners(Bubble bubble)
+    public List<int> GetBucketsForAllCorners(GameObject gameObject)
     {
       List<int> bucketsBubbleIsIn = new List<int>();
 
       // Top left
       AddCornerToBucket(
-        bubble.Rect.X,
-        bubble.Rect.Y,
+        gameObject.Rect.X,
+        gameObject.Rect.Y,
         bucketsBubbleIsIn
       );
       // Top right
       AddCornerToBucket(
-        bubble.Rect.X + bubble.Rect.Width,
-        bubble.Rect.Y,
+        gameObject.Rect.X + gameObject.Rect.Width,
+        gameObject.Rect.Y,
         bucketsBubbleIsIn
       );
       // Bottom left
       AddCornerToBucket(
-        bubble.Rect.X,
-        bubble.Rect.Y + bubble.Rect.Height,
+        gameObject.Rect.X,
+        gameObject.Rect.Y + gameObject.Rect.Height,
         bucketsBubbleIsIn
       );
       // Bottom right
       AddCornerToBucket(
-        bubble.Rect.X  + bubble.Rect.Width,
-        bubble.Rect.Y + bubble.Rect.Height,
+        gameObject.Rect.X  + gameObject.Rect.Width,
+        gameObject.Rect.Y + gameObject.Rect.Height,
         bucketsBubbleIsIn
       );
       
       return bucketsBubbleIsIn;
     }
 
-    public void RegisterBubble(Bubble bubble)
+    public void RegisterGameObject(GameObject gameObject)
     {
-      List<int> bucketList = GetBucketsForAllCorners(bubble);
+      List<int> bucketList = GetBucketsForAllCorners(gameObject);
       foreach(int bucket in bucketList)
       {
-        Buckets[bucket].Add(bubble);
+        Buckets[bucket].Add(gameObject);
       }
     }
 
-    public List<Bubble> GetNearby(Bubble bubble)
+    public List<GameObject> GetNearby(GameObject gameObject)
     {
-      List<Bubble> bubblesNearby = new List<Bubble>();
-      List<int> bucketIds = GetBucketsForAllCorners(bubble);
+      List<GameObject> gameObjectsNearby = new List<GameObject>();
+      List<int> bucketIds = GetBucketsForAllCorners(gameObject);
       foreach(int id in bucketIds)
       {
-        List<Bubble> bubblesInBucket = Buckets[id].Where(b => b != bubble).ToList();
-        bubblesNearby.AddRange(bubblesInBucket);
+        List<GameObject> bubblesInBucket = Buckets[id].Where(b => b != gameObject).ToList();
+        gameObjectsNearby.AddRange(bubblesInBucket);
       }
-      return bubblesNearby;
+      return gameObjectsNearby;
     }
   }
 }

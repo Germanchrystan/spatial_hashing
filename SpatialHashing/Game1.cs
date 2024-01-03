@@ -12,12 +12,10 @@ namespace SpatialHashing
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private List<Bubble> bubbles = new List<Bubble>(Constants.BUBBLE_AMOUNT);
+        private List<GameObject> bubbles = new List<GameObject>(Constants.BUBBLE_AMOUNT);
         private SpriteFont gameFont;
-        private int collisionCheckingCounter = 0;
-        private bool firstFrame = true;
 
-        private SpatialHashingManager spatialHashingManager;
+        private CollisionCheckerIteratorStrategy collisionCheckerIterator;
 
         public Game1()
         {
@@ -44,7 +42,8 @@ namespace SpatialHashing
             Texture2D bubbleTexture = new Texture2D(GraphicsDevice, 1,1);
             bubbleTexture.SetData<Color>(new Color[] { Color.Black });
             
-            spatialHashingManager = new SpatialHashingManager(16);
+            collisionCheckerIterator = new SpatialHashingCollisionCheckerIterator(16);
+            // collisionCheckerIterator = new NormalCollisionCheckerIterator();
 
             Random rnd = new Random();
             for(int i = 0; i < Constants.BUBBLE_AMOUNT; i++)
@@ -63,39 +62,15 @@ namespace SpatialHashing
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // Register Bubbles
-            foreach(Bubble bubble in bubbles)
-            {
-                spatialHashingManager.RegisterBubble(bubble);
-            }
             
-            // Collision checking
-            for(int i = 0; i < Constants.BUBBLE_AMOUNT; i++)
-            {
-                if(firstFrame) collisionCheckingCounter++;
-                // Normal collision check
-                // for(int j = i+1; j < Constants.BUBBLE_AMOUNT; j++)
-                // {
-                //     if(firstFrame) collisionCheckingCounter++;
-                //     CollisionChecker.CheckCollision(bubbles[i], bubbles[j]);
-                // }
-                
-                // Spatial Hashing check
-                List<Bubble> nearbyBubbles = spatialHashingManager.GetNearby(bubbles[i]);
-                foreach(Bubble nearbyBubble in nearbyBubbles)
-                {
-                    if(firstFrame) collisionCheckingCounter++;
-                    if (bubbles[i] != nearbyBubble) CollisionChecker.CheckCollision(bubbles[i], nearbyBubble);
-                }
-            }
 
             foreach(var bubble in bubbles)
             {
                 bubble.Update(gameTime);
             }
 
-            firstFrame = false;
-            spatialHashingManager.ClearBuckets();
+            collisionCheckerIterator.UpdateCollisions((List<GameObject>)bubbles);
+            
             base.Update(gameTime);
         }
 
@@ -108,8 +83,7 @@ namespace SpatialHashing
             {
                 bubble.Draw(_spriteBatch);
             }
-            _spriteBatch.DrawString(gameFont, "Collision checks: " + collisionCheckingCounter, new Vector2(3, 40), Color.White);
-            // _spriteBatch.DrawString(gameFont, "")
+            _spriteBatch.DrawString(gameFont, "Collision checks: " + collisionCheckerIterator.CollisionCheckCounter, new Vector2(3, 20), Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);
