@@ -23,3 +23,4 @@ C:\Users\German\Documents\Repos\SpatialHashing\SpatialHashing\obj\Debug\net6.0\r
 C:\Users\German\Documents\Repos\SpatialHashing\SpatialHashing\obj\Debug\net6.0\SpatialHashing.pdb
 C:\Users\German\Documents\Repos\SpatialHashing\SpatialHashing\obj\Debug\net6.0\SpatialHashing.genruntimeconfig.cache
 C:\Users\German\Documents\Repos\SpatialHashing\SpatialHashing\obj\Debug\net6.0\ref\SpatialHashing.dll
+C:\Users\German\Documents\Repos\SpatialHashing\SpatialHashing\bin\Debug\net6.0\Content\galleryFont.xnb
